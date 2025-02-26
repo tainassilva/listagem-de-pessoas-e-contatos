@@ -12,8 +12,7 @@
         <th scope="col">Endereço</th>
         <th scope="col">Cidade</th>
         <th scope="col">UF</th>
-        <th scope="col">Tipo de Contato</th>
-        <th scope="col">Contato</th>
+        <th scope="col">Contatos</th>
         <th scope="col">
           <button class="btn btn-link p-0 border-0 text-primary" [routerLink]="['/pessoas/add']">
             <i class="fa-solid fa-square-plus fa-2x"></i>
@@ -22,56 +21,26 @@
       </tr>
     </thead>
     <tbody class="table-group-divider">
-      <tr>
-        <th scope="row">1</th>
-        <td>João Silva</td>
-        <td>01001-000</td>
-        <td>Rua das Flores, 123</td>
-        <td>São Paulo</td>
-        <td>SP</td>
-        <td>Celular</td>
-        <td>(11) 98765-4321</td>
+      <tr *ngFor="let pessoa of pessoas">
+        <td>{{ pessoa.id }}</td>
+        <td>{{ pessoa.nome }}</td>
+        <td>{{ pessoa.cep }}</td>
+        <td>{{ pessoa.endereco }}</td>
+        <td>{{ pessoa.cidade }}</td>
+        <td>{{ pessoa.uf }}</td>
+        <td>{{ pessoa.contatos }}</td>
+
+
+       <!-- <td>
+          <span *ngFor="let contato of pessoa.contatos; let i = index">
+            {{ contato.tipo }}: {{ contato.valor }}<span *ngIf="i < pessoa.contatos.length - 1">, </span>
+          </span>
+        </td>-->
         <td>
-          <button class="btn btn-link p-0 border-0 me-3" [routerLink]="['/pessoas/edit']">
+          <button class="btn btn-link p-0 border-0 me-3" [routerLink]="['/pessoas/edit', pessoa.id]">
             <i class="fa-solid fa-pen-to-square fa-lg"></i>
           </button>
-          <button class="btn btn-link p-0 border-0 text-danger" (click)="isDelete()">
-            <i class="fa-solid fa-trash fa-lg"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Maria Souza</td>
-        <td>22041-001</td>
-        <td>Avenida Atlântica, 456</td>
-        <td>Rio de Janeiro</td>
-        <td>RJ</td>
-        <td>Celular</td>
-        <td>(21) 99988-7766</td>
-        <td>
-          <button class="btn btn-link p-0 border-0 me-3" [routerLink]="['/pessoas/edit']">
-            <i class="fa-solid fa-pen-to-square fa-lg"></i>
-          </button>
-          <button class="btn btn-link p-0 border-0 text-danger" (click)="isDelete()">
-            <i class="fa-solid fa-trash fa-lg"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Carlos Mendes</td>
-        <td>30130-010</td>
-        <td>Praça da Liberdade, 789</td>
-        <td>Belo Horizonte</td>
-        <td>MG</td>
-        <td>Fixo</td>
-        <td>(31) 3234-5678</td>
-        <td>
-          <button class="btn btn-link p-0 border-0 me-3" [routerLink]="['/pessoas/edit']">
-            <i class="fa-solid fa-pen-to-square fa-lg"></i>
-          </button>
-          <button class="btn btn-link p-0 border-0 text-danger" (click)="isDelete()">
+          <button class="btn btn-link p-0 border-0 text-danger" (click)="isDelete(pessoa.id)">
             <i class="fa-solid fa-trash fa-lg"></i>
           </button>
         </td>

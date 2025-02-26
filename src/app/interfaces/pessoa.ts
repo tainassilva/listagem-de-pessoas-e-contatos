@@ -1,12 +1,12 @@
 import { Estados } from "./estados";
-import { IContato } from "./contato";
 
 export interface IPessoa {
-  id: number;
+  id: number; // Opcional para novos cadastros
   nome: string;
-  cep: string;
   endereco: string;
+  cep: string;
   cidade: string;
   uf: Estados;
-  contatos: IContato[];
+  contatos: string[];
 }
+

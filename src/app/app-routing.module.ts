@@ -15,7 +15,7 @@ const routes: Routes = [
     component: AddPessoaComponent
   },
   {
-    path:'pessoas/edit',
+    path:'pessoas/edit/:id',
     component: EditPessoaComponent
   },
   {

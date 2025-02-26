@@ -9,6 +9,9 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { FormsComponent } from './components/forms/forms.component';
 import { AddPessoaComponent } from './pages/add-pessoa/add-pessoa.component';
 import { EditPessoaComponent } from './pages/edit-pessoa/edit-pessoa.component';
+import { HttpClientModule } from '@angular/common/http';
+import { PessoasService } from './services/pessoas.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,9 +25,12 @@ import { EditPessoaComponent } from './pages/edit-pessoa/edit-pessoa.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [PessoasService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

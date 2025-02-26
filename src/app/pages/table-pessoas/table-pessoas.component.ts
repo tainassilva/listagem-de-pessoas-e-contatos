@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { IPessoa } from 'src/app/interfaces/pessoa';
+import { PessoasService } from 'src/app/services/pessoas.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -6,9 +8,25 @@ import Swal from 'sweetalert2';
   templateUrl: './table-pessoas.component.html',
   styleUrls: ['./table-pessoas.component.scss']
 })
-export class TablePessoasComponent {
+export class TablePessoasComponent implements OnInit {
 
-  isDelete(){
+  pessoas: IPessoa[] = [];
+
+  constructor(private pessoasService: PessoasService) {}
+
+  ngOnInit() {
+    this.pessoasService.buscarTodasAsPessoas().subscribe({
+      next: (response: IPessoa[]) => {
+        console.log('Pessoas recebidas:', response); // Adiciona um log aqui
+        this.pessoas = response;
+      },
+      error: (err) => {
+        console.error("Erro ao buscar pessoas:", err);
+      }
+    });
+  }
+
+  isDelete(id: number) {
     Swal.fire({
       title: "Tem certeza?",
       text: "Esta ação é irreversível. Deseja realmente excluir este registro?",
@@ -20,10 +38,11 @@ export class TablePessoasComponent {
       cancelButtonText: "Cancelar"
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Excluído!",
-          text: "O registro foi removido com sucesso.",
-          icon: "success"
+        this.pessoasService.deletarPessoa(id).subscribe(() => {
+          Swal.fire("Excluído!", "O registro foi removido com sucesso.", "success");
+          this.pessoas = this.pessoas.filter(p => p.id !== id);
+        }, () => {
+          Swal.fire("Erro!", "Não foi possível excluir o registro.", "error");
         });
       }
     });
