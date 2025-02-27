@@ -2,8 +2,13 @@
   <h2>Controle de Pessoas e seus Contatos</h2>
 </div>
 
-<div class="container">
-  <table class="table">
+<div class="container d-flex align-items-center justify-content-center">
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+    </div>
+  </div>
+
+  <table *ngIf="!isLoading" class="table">
     <thead>
       <tr>
         <th scope="col">ID</th>
@@ -29,13 +34,6 @@
         <td>{{ pessoa.cidade }}</td>
         <td>{{ pessoa.uf }}</td>
         <td>{{ pessoa.contatos }}</td>
-
-
-       <!-- <td>
-          <span *ngFor="let contato of pessoa.contatos; let i = index">
-            {{ contato.tipo }}: {{ contato.valor }}<span *ngIf="i < pessoa.contatos.length - 1">, </span>
-          </span>
-        </td>-->
         <td>
           <button class="btn btn-link p-0 border-0 me-3" [routerLink]="['/pessoas/edit', pessoa.id]">
             <i class="fa-solid fa-pen-to-square fa-lg"></i>
@@ -48,3 +46,4 @@
     </tbody>
   </table>
 </div>
+<app-footer />

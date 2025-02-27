@@ -12,6 +12,7 @@ import { EditPessoaComponent } from './pages/edit-pessoa/edit-pessoa.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PessoasService } from './services/pessoas.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HomePageComponent,
     FormsComponent,
     AddPessoaComponent,
-    EditPessoaComponent
+    EditPessoaComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [PessoasService],
+  providers: [PessoasService, FormsComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

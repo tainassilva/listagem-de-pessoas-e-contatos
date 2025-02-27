@@ -1,0 +1,46 @@
+<div class="container">
+  <form [formGroup]="formGroupPessoa" (ngSubmit)="submitForm()">
+    <div class="mb-3">
+      <label for="nome" class="form-label">Nome</label>
+      <input formControlName="nome" type="text" class="form-control" id="nome" placeholder="Insira o nome completo" />
+    </div>
+
+    <div class="mb-3">
+      <label for="cep" class="form-label">CEP</label>
+      <input formControlName="cep" type="text" class="form-control" id="cep" placeholder="Insira o CEP" (blur)="handleBuscarEnderecoPorCep()" />
+      <div id="cepHelp" class="form-text">Insira o CEP corretamente.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="endereco" class="form-label">Endereço</label>
+      <input formControlName="endereco" type="text" class="form-control" id="endereco" placeholder="Insira o endereço completo" readonly />
+    </div>
+
+    <div class="mb-3">
+      <label for="cidade" class="form-label">Cidade</label>
+      <input formControlName="cidade" type="text" class="form-control" id="cidade" placeholder="Insira a cidade" readonly />
+    </div>
+
+    <div class="mb-3">
+      <label for="uf" class="form-label">UF</label>
+      <select formControlName="uf" class="form-control" id="uf">
+        <option value="">Selecione o estado</option>
+        <option *ngFor="let estado of estados" [value]="estado.value">{{ estado.label }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="contatos" class="form-label">Contato</label>
+      <input formControlName="contatos" type="text" class="form-control" id="contatos" placeholder="Insira o número de contato" />
+      <div id="contatoHelp" class="form-text">Insira o número de contato.</div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 mb-5 p-3">
+      <button type="submit" class="btn btn-primary w-25" [disabled]="formGroupPessoa.invalid || isLoading">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span *ngIf="!isLoading">Salvar</span>
+      </button>
+      <button type="button" class="btn btn-secondary w-25" (click)="voltar()">Voltar</button>
+    </div>
+  </form>
+</div>

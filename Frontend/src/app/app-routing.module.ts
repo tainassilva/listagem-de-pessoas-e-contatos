@@ -6,6 +6,7 @@ import { AddPessoaComponent } from './pages/add-pessoa/add-pessoa.component';
 import { EditPessoaComponent } from './pages/edit-pessoa/edit-pessoa.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
     path: 'pessoas',
     component: TablePessoasComponent
