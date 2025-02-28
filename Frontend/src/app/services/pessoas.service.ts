@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IPessoa } from '../interfaces/pessoa';  // Importar a interface
+import { IPessoa } from '../interfaces/pessoa';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 
@@ -12,7 +12,7 @@ export class PessoasService {
 
   constructor(private http: HttpClient) {}
 
-  buscarTodasAsPessoas(): Observable<IPessoa[]> {
+  buscarTodasAsPessoas() {
     return this.http.get<IPessoa[]>(`${this.url}`);
   }
 
@@ -21,7 +21,7 @@ export class PessoasService {
     return this.http.get<IPessoa>(`${this.url}/${id}`);
   }
 
-  cadastrarPessoa(pessoa: IPessoa): Observable<IPessoa> {
+  cadastrarPessoa(pessoa: IPessoa){
     return this.http.post<IPessoa>(`${this.url}`, pessoa);
   }
 

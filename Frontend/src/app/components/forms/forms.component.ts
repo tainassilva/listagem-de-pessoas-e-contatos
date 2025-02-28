@@ -52,9 +52,8 @@ export class FormsComponent {
 
   handleBuscarEnderecoPorCep() {
     const cep = this.formGroupPessoa.get('cep')?.value;
-    const cepRegex = /^\d{5}-?\d{3}$/;
 
-    if (cep && cepRegex.test(cep)) {
+    if (cep) {
       this.viaCepService.buscarEnderecoPorCep(cep.replace('-', '')).subscribe({
         next: (endereco) => {
           if (endereco && !endereco.erro) {
@@ -72,8 +71,6 @@ export class FormsComponent {
           Swal.fire('Erro', 'Não foi possível buscar o CEP.', 'error');
         }
       });
-    } else if (cep) {
-      Swal.fire('Erro', 'Formato de CEP inválido', 'error');
     }
   }
 

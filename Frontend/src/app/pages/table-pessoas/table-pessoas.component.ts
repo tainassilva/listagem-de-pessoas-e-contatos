@@ -19,7 +19,7 @@ export class TablePessoasComponent implements OnInit {
     this.pessoasService.buscarTodasAsPessoas().subscribe({
       next: (response: IPessoa[]) => {
         this.pessoas = response;
-        this.isLoading = false; // Define como false quando os dados são carregados
+        this.isLoading = false;
       },
       error: (err) => {
         console.error("Erro ao buscar pessoas:", err);

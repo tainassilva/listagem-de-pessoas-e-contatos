@@ -11,16 +11,17 @@ import Swal from 'sweetalert2';
   styleUrls: ['./edit-pessoa.component.scss']
 })
 export class EditPessoaComponent implements OnInit {
-  pessoa: IPessoa | undefined;
-  id!: number;
+  pessoa: IPessoa = {} as IPessoa;
+  id: number = 0;
 
   formGroupPessoa: FormGroup = new FormGroup({
-    nome: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    cep: new FormControl('', [Validators.required]),
-    endereco: new FormControl('', [Validators.required]),
-    cidade: new FormControl('', [Validators.required]),
+    nome: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+    cep: new FormControl('', [Validators.required, Validators.pattern('[0-9]{8}')]),
+    endereco: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]),
+    numeroCasa: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]),
+    cidade: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*')]),
     uf: new FormControl('', [Validators.required]),
-    contatos: new FormControl('', [Validators.required, Validators.pattern('[0-9]{10,11}')]),
+    contatos: new FormControl([], [Validators.required, Validators.pattern('[0-9]{10,11}')]),
   });
 
   pessoasService = inject(PessoasService);
@@ -38,6 +39,7 @@ export class EditPessoaComponent implements OnInit {
             nome: pessoa.nome,
             cep: pessoa.cep,
             endereco: pessoa.endereco,
+            numeroCasa: pessoa.numeroCasa,
             cidade: pessoa.cidade,
             uf: pessoa.uf,
             contatos: pessoa.contatos[0]
@@ -45,6 +47,7 @@ export class EditPessoaComponent implements OnInit {
         },
         error: error => {
           Swal.fire('Erro', 'Erro ao buscar pessoa!', 'error');
+          this.router.navigate(['/pessoas']);
         }
       });
     }
@@ -54,7 +57,7 @@ export class EditPessoaComponent implements OnInit {
     if (this.pessoa) {
 
       const pessoa: IPessoa = this.formGroupPessoa.value;
-      pessoa.contatos = [this.formGroupPessoa.value.contatos];
+      pessoa.contatos = [this.formGroupPessoa.value.contatos[0]];
 
       Swal.fire({
         title: "Deseja salvar as alterações?",

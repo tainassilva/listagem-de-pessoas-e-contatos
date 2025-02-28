@@ -1,38 +1,97 @@
 <div class="container">
   <form [formGroup]="formGroupPessoa" (ngSubmit)="submitForm()">
+    <!-- Nome -->
     <div class="mb-3">
       <label for="nome" class="form-label">Nome</label>
-      <input formControlName="nome" type="text" class="form-control" id="nome" placeholder="Insira o nome completo" />
+      <input
+        formControlName="nome"
+        type="text"
+        class="form-control"
+        id="nome"
+        placeholder="Insira o nome completo"
+        [ngClass]="{'is-invalid': formGroupPessoa.get('nome')?.invalid && formGroupPessoa.get('nome')?.touched}"
+      />
+      <div class="invalid-feedback" *ngIf="formGroupPessoa.get('nome')?.invalid && formGroupPessoa.get('nome')?.touched">
+        <small *ngIf="formGroupPessoa.get('nome')?.errors?.['required']">Nome é obrigatório.</small>
+        <small *ngIf="formGroupPessoa.get('nome')?.errors?.['minlength']">Mínimo 3 caracteres.</small>
+        <small *ngIf="formGroupPessoa.get('nome')?.errors?.['maxlength']">Máximo 50 caracteres.</small>
+        <small *ngIf="formGroupPessoa.get('nome')?.errors?.['pattern']">Somente letras e espaços são permitidos.</small>
+      </div>
     </div>
 
+    <!-- CEP -->
     <div class="mb-3">
       <label for="cep" class="form-label">CEP</label>
-      <input formControlName="cep" type="text" class="form-control" id="cep" placeholder="Insira o CEP" (blur)="handleBuscarEnderecoPorCep()" />
-      <div id="cepHelp" class="form-text">Insira o CEP corretamente.</div>
+      <input
+        formControlName="cep"
+        type="text"
+        class="form-control"
+        id="cep"
+        placeholder="Insira o CEP"
+        (blur)="handleBuscarEnderecoPorCep()"
+        [ngClass]="{'is-invalid': formGroupPessoa.get('cep')?.invalid && formGroupPessoa.get('cep')?.touched}"
+      />
+      <div class="invalid-feedback" *ngIf="formGroupPessoa.get('cep')?.invalid && formGroupPessoa.get('cep')?.touched">
+        <small *ngIf="formGroupPessoa.get('cep')?.errors?.['required']">CEP é obrigatório.</small>
+        <small *ngIf="formGroupPessoa.get('cep')?.errors?.['pattern']">Formato inválido (somente números, 8 ou 9 dígitos).</small>
+      </div>
     </div>
 
+    <!-- Endereço -->
     <div class="mb-3">
       <label for="endereco" class="form-label">Endereço</label>
       <input formControlName="endereco" type="text" class="form-control" id="endereco" placeholder="Insira o endereço completo" readonly />
     </div>
 
+    <!-- Número da Casa -->
+    <div class="mb-3">
+      <label for="numeroCasa" class="form-label">Número</label>
+      <input
+        formControlName="numeroCasa"
+        type="text"
+        class="form-control"
+        id="numeroCasa"
+        placeholder="Insira o número da casa"
+        [ngClass]="{'is-invalid': formGroupPessoa.get('numeroCasa')?.invalid && formGroupPessoa.get('numeroCasa')?.touched}"
+      />
+      <div class="invalid-feedback" *ngIf="formGroupPessoa.get('numeroCasa')?.invalid && formGroupPessoa.get('numeroCasa')?.touched">
+        <small *ngIf="formGroupPessoa.get('numeroCasa')?.errors?.['required']">Número é obrigatório.</small>
+        <small *ngIf="formGroupPessoa.get('numeroCasa')?.errors?.['minlength']">Mínimo 1 caractere.</small>
+        <small *ngIf="formGroupPessoa.get('numeroCasa')?.errors?.['maxlength']">Máximo 5 caracteres.</small>
+        <small *ngIf="formGroupPessoa.get('numeroCasa')?.errors?.['pattern']">Somente números são permitidos.</small>
+      </div>
+    </div>
+
+    <!-- Cidade -->
     <div class="mb-3">
       <label for="cidade" class="form-label">Cidade</label>
       <input formControlName="cidade" type="text" class="form-control" id="cidade" placeholder="Insira a cidade" readonly />
     </div>
 
+    <!-- UF -->
     <div class="mb-3">
       <label for="uf" class="form-label">UF</label>
       <select formControlName="uf" class="form-control" id="uf">
-        <option value="">Selecione o estado</option>
+        <option value="" readonly >Selecione o estado</option>
         <option *ngFor="let estado of estados" [value]="estado.value">{{ estado.label }}</option>
       </select>
     </div>
 
+    <!-- Contato -->
     <div class="mb-3">
       <label for="contatos" class="form-label">Contato</label>
-      <input formControlName="contatos" type="text" class="form-control" id="contatos" placeholder="Insira o número de contato" />
-      <div id="contatoHelp" class="form-text">Insira o número de contato.</div>
+      <input
+        formControlName="contatos"
+        type="text"
+        class="form-control"
+        id="contatos"
+        placeholder="Insira o número de contato"
+        [ngClass]="{'is-invalid': formGroupPessoa.get('contatos')?.invalid && formGroupPessoa.get('contatos')?.touched}"
+      />
+      <div class="invalid-feedback" *ngIf="formGroupPessoa.get('contatos')?.invalid && formGroupPessoa.get('contatos')?.touched">
+        <small *ngIf="formGroupPessoa.get('contatos')?.errors?.['required']">Contato é obrigatório.</small>
+        <small *ngIf="formGroupPessoa.get('contatos')?.errors?.['pattern']">Formato inválido (somente números, 10 ou 11 dígitos).</small>
+      </div>
     </div>
 
     <div class="d-flex justify-content-center gap-3 mb-5 p-3">
