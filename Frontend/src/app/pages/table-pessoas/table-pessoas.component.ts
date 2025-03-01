@@ -9,13 +9,19 @@ import Swal from 'sweetalert2';
   styleUrls: ['./table-pessoas.component.scss']
 })
 export class TablePessoasComponent implements OnInit {
-  pessoas: IPessoa[] = [];
+  pessoas: IPessoa[] = []
   isLoading = true;
 
-  pessoasService = inject(PessoasService)
+
+  pessoasService = inject(PessoasService);
+
+ // Função para retornar o celular de uma pessoa
+ retornaApenasOCelular(pessoa: IPessoa): string | undefined {
+  const celular = pessoa.contatos.find(contato => contato.tipoContato === 'CELULAR');
+  return celular ? celular.contato : undefined;
+}
 
   ngOnInit() {
-
     this.pessoasService.buscarTodasAsPessoas().subscribe({
       next: (response: IPessoa[]) => {
         this.pessoas = response;
@@ -24,10 +30,11 @@ export class TablePessoasComponent implements OnInit {
       error: (err) => {
         console.error("Erro ao buscar pessoas:", err);
         Swal.fire("Erro!", "Não foi possível buscar as pessoas.", "error");
-        this.isLoading = false; // Define como false em caso de erro
+        this.isLoading = false;
       }
     });
   }
+
 
   isDelete(id: number) {
     Swal.fire({

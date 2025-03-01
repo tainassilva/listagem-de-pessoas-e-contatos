@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, FormBuilder, Validators } from '@angular/forms'; // Importe FormBuilder e Validators
 import { Router } from '@angular/router';
 import { ViaCepService } from 'src/app/services/via-cep.service';
 import Swal from 'sweetalert2';
@@ -40,21 +40,26 @@ export class FormsComponent {
     { value: 'TO', label: 'Tocantins' },
   ];
 
+  tiposContato = [
+    { value: 'TELEFONE_FIXO', label: 'Telefone Fixo' },
+    { value: 'CELULAR', label: 'Celular' },
+    { value: 'EMAIL', label: 'Email' },
+    { value: 'LINKEDIN', label: 'LinkedIn' }
+  ];
+
   @Input() formGroupPessoa!: FormGroup;
   @Output() onSubmit = new EventEmitter<void>();
   @Output() onCancel = new EventEmitter<void>();
 
-  isLoading = false;
-
   viaCepService = inject(ViaCepService);
   router = inject(Router);
-
+  formBuilder = inject(FormBuilder);
 
   handleBuscarEnderecoPorCep() {
-    const cep = this.formGroupPessoa.get('cep')?.value;
-
-    if (cep) {
-      this.viaCepService.buscarEnderecoPorCep(cep.replace('-', '')).subscribe({
+    const cepControl = this.formGroupPessoa.get('cep');
+    if (cepControl?.value) {
+      const cep = cepControl.value.replace('-', '');
+      this.viaCepService.buscarEnderecoPorCep(cep).subscribe({
         next: (endereco) => {
           if (endereco && !endereco.erro) {
             this.formGroupPessoa.patchValue({
@@ -84,5 +89,17 @@ export class FormsComponent {
 
   voltar(): void {
     this.router.navigate(['/pessoas']);
+  }
+
+
+  get contatos(): FormArray {
+    return this.formGroupPessoa.get('contatos') as FormArray;
+  }
+
+  addContato() {
+    this.contatos.push(this.formBuilder.group({
+      tipoContato: ['', Validators.required],
+      contato: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]]
+    }));
   }
 }

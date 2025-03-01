@@ -1,8 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder,  FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PessoasService } from 'src/app/services/pessoas.service';
 import { IPessoa } from 'src/app/interfaces/pessoa';
+import { IContato } from 'src/app/interfaces/contato';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -14,38 +15,82 @@ export class EditPessoaComponent implements OnInit {
   pessoa: IPessoa = {} as IPessoa;
   id: number = 0;
 
-  formGroupPessoa: FormGroup = new FormGroup({
-    nome: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
-    cep: new FormControl('', [Validators.required, Validators.pattern('[0-9]{8}')]),
-    endereco: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]),
-    numeroCasa: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]),
-    cidade: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*')]),
-    uf: new FormControl('', [Validators.required]),
-    contatos: new FormControl([], [Validators.required, Validators.pattern('[0-9]{10,11}')]),
-  });
 
   pessoasService = inject(PessoasService);
   activatedRoute = inject(ActivatedRoute);
   router = inject(Router);
+  formBuilder = inject(FormBuilder);
+
+  formGroupPessoa: FormGroup = this.formBuilder.group({
+    nome: ['', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(50),
+      Validators.pattern('[a-zA-ZÀ-ÿ ]*')]],
+
+    cep: ['', [
+      Validators.required,
+      Validators.pattern('^[0-9]{5}-?[0-9]{3}$')]],
+
+    endereco: ['', [
+      Validators.required,
+      Validators.minLength(5),
+      Validators.maxLength(50),
+      Validators.pattern('[a-zA-ZÀ-ÿ0-9 ]*')]],
+
+    numeroCasa: ['', [
+      Validators.required, Validators.minLength(1),
+      Validators.maxLength(6),
+      Validators.pattern('^[0-9]+$')]],
+
+    cidade: ['', [Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(50),
+      Validators.pattern('[a-zA-ZÀ-ÿ ]*')]],
+
+    uf: ['', [Validators.required]],
+
+    contatos: this.formBuilder.array([])
+
+  });
+
+
+  createContatoFormGroup(contato: IContato = {} as IContato): FormGroup {
+    return this.formBuilder.group({
+      id: [contato.id],
+      tipoContato: [contato.tipoContato || '', Validators.required],
+      contato: [contato.contato || '', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]]
+    });
+  }
+
+  get contatos(): FormArray {
+    return this.formGroupPessoa.get('contatos') as FormArray;
+  }
+
+  setContatos(contatos: IContato[]): void {
+    contatos.forEach(contato => {
+      this.contatos.push(this.createContatoFormGroup(contato));
+    });
+  }
 
   ngOnInit(): void {
     const idParam = this.activatedRoute.snapshot.paramMap.get('id');
     if (idParam) {
       this.id = +idParam;
       this.pessoasService.buscarPessoaPorId(this.id).subscribe({
-        next: pessoa => {
+        next: (pessoa) => {
           this.pessoa = pessoa;
           this.formGroupPessoa.patchValue({
             nome: pessoa.nome,
             cep: pessoa.cep,
             endereco: pessoa.endereco,
-            numeroCasa: pessoa.numeroCasa,
             cidade: pessoa.cidade,
             uf: pessoa.uf,
-            contatos: pessoa.contatos[0]
+            numeroCasa: pessoa.numeroCasa
           });
+          this.setContatos(pessoa.contatos);
         },
-        error: error => {
+        error: () => {
           Swal.fire('Erro', 'Erro ao buscar pessoa!', 'error');
           this.router.navigate(['/pessoas']);
         }
@@ -53,11 +98,20 @@ export class EditPessoaComponent implements OnInit {
     }
   }
 
-  atualizarPessoa(): void {
-    if (this.pessoa) {
 
-      const pessoa: IPessoa = this.formGroupPessoa.value;
-      pessoa.contatos = [this.formGroupPessoa.value.contatos[0]];
+  atualizarPessoa(): void {
+    if (this.formGroupPessoa.valid) {
+      const pessoaAtualizada: IPessoa = {
+        id: this.id,
+        ...this.formGroupPessoa.value,
+        contatos: [
+          {
+            id: this.pessoa.contatos[0]?.id || null,
+            tipoContato: this.contatos.controls[0]?.get('tipoContato')?.value || '',
+            contato: this.contatos.controls[0]?.get('contato')?.value || ''
+          }
+        ]
+      };
 
       Swal.fire({
         title: "Deseja salvar as alterações?",
@@ -73,18 +127,17 @@ export class EditPessoaComponent implements OnInit {
         cancelButtonColor: "#6c757d",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.pessoasService.atualizarPessoa(this.id, pessoa).subscribe({
+          this.pessoasService.atualizarPessoa(this.id, pessoaAtualizada).subscribe({
             next: () => {
               Swal.fire('Sucesso', 'Pessoa editada com sucesso!', 'success');
               this.router.navigate(['/pessoas']);
             },
-            error: error => {
-              console.error("Erro ao atualizar pessoa", error);
+            error: () => {
               Swal.fire('Erro', 'Erro ao atualizar pessoa!', 'error');
             }
           });
         }
-        });
+      });
     }
-}
+  }
 }

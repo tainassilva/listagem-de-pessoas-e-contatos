@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormGroup, Validators, FormArray, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PessoasService } from 'src/app/services/pessoas.service';
+import { IContato } from 'src/app/interfaces/contato';
 import { IPessoa } from 'src/app/interfaces/pessoa';
+import { PessoasService } from 'src/app/services/pessoas.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -10,65 +11,79 @@ import Swal from 'sweetalert2';
   templateUrl: './add-pessoa.component.html',
   styleUrls: ['./add-pessoa.component.scss'],
 })
-export class AddPessoaComponent{
+export class AddPessoaComponent {
+  private fb = inject(FormBuilder);
+  private pessoasService = inject(PessoasService);
+  private router = inject(Router);
 
-  formGroupPessoa: FormGroup = new FormGroup({
-    nome: new FormControl('', [
+  formGroupPessoa: FormGroup = this.fb.group({
+    nome: ['', [
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(50),
-      Validators.pattern('[a-zA-ZÀ-ÿ ]*')
-    ]),
+      Validators.pattern('[a-zA-ZÀ-ÿ ]*')]],
 
-    cep: new FormControl('', [
+    cep: ['', [
       Validators.required,
-      Validators.pattern('^[0-9]{5}-?[0-9]{3}$')  // Permitindo formatos 00000-000 ou 0000000
-    ]),
+      Validators.pattern('^[0-9]{5}-?[0-9]{3}$')]],
 
-    endereco: new FormControl('', [
+    endereco: ['', [
       Validators.required,
       Validators.minLength(5),
       Validators.maxLength(50),
-      Validators.pattern('[a-zA-ZÀ-ÿ0-9 ]*')
-    ]),
+      Validators.pattern('[a-zA-ZÀ-ÿ0-9 ]*')]],
 
-    numeroCasa: new FormControl('', [
-      Validators.required,
-      Validators.minLength(1),
+    numeroCasa: ['', [
+      Validators.required, Validators.minLength(1),
       Validators.maxLength(6),
-      Validators.pattern('^[0-9]+$')
-    ]),
+      Validators.pattern('^[0-9]+$')]],
 
-    cidade: new FormControl('', [
-      Validators.required,
+    cidade: ['', [Validators.required,
       Validators.minLength(3),
       Validators.maxLength(50),
-      Validators.pattern('[a-zA-ZÀ-ÿ ]*')
-    ]),
+      Validators.pattern('[a-zA-ZÀ-ÿ ]*')]],
 
-    uf: new FormControl('', [Validators.required]),
+    uf: ['', [Validators.required]],
 
-    contatos: new FormControl('', [
-      Validators.required,
-      Validators.pattern('^[0-9]{10,11}$')  // Permitindo 10 ou 11 dígitos para celular
-    ]),
+    contatos: this.fb.array([])
   });
 
+  get contatos(): FormArray {
+    return this.formGroupPessoa.get('contatos') as FormArray;
+  }
 
-  pessoasService = inject(PessoasService);
-  router = inject(Router);
+  // o Optional pode ser usado para tornar um parâmetro de uma função opcional
+  createContatoFormGroup(contato: Partial<IContato> = {}): FormGroup {
+    return this.fb.group({
+      id: [contato.id ],
+      tipoContato: [contato.tipoContato || '', Validators.required],
+      contato: [contato.contato || '', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]]
+    });
+  }
+
+  addContato(): void {
+    this.contatos.push(this.createContatoFormGroup());
+  }
 
   salvarPessoa(): void {
-    const pessoa: IPessoa = this.formGroupPessoa.value;
-    pessoa.contatos = [this.formGroupPessoa.value.contatos[0]];
+    if (this.formGroupPessoa.invalid) {
+      Swal.fire('Erro', 'Por favor, preencha todos os campos corretamente.', 'error');
+      return;
+    }
+
+    const pessoa: IPessoa = {
+      ...this.formGroupPessoa.value,
+      contatos: this.contatos.value
+    };
+
     this.pessoasService.cadastrarPessoa(pessoa).subscribe({
       next: () => {
         Swal.fire('Sucesso', 'Pessoa cadastrada com sucesso!', 'success');
         this.router.navigate(['/pessoas']);
       },
-      error: (error) => {
+      error: () => {
         Swal.fire('Erro', 'Não foi possível cadastrar a pessoa.', 'error');
-      },
+      }
     });
   }
 }

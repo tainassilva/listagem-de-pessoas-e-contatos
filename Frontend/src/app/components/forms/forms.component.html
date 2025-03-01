@@ -1,7 +1,8 @@
 <div class="container">
   <form [formGroup]="formGroupPessoa" (ngSubmit)="submitForm()">
-    <!-- Nome -->
-    <div class="mb-3">
+
+     <!-- Nome -->
+     <div class="mb-3">
       <label for="nome" class="form-label">Nome</label>
       <input
         formControlName="nome"
@@ -38,10 +39,23 @@
     </div>
 
     <!-- Endereço -->
-    <div class="mb-3">
-      <label for="endereco" class="form-label">Endereço</label>
-      <input formControlName="endereco" type="text" class="form-control" id="endereco" placeholder="Insira o endereço completo" readonly />
-    </div>
+<div class="mb-3">
+  <label for="endereco" class="form-label">Endereço</label>
+  <input
+    formControlName="endereco"
+    type="text"
+    class="form-control"
+    id="endereco"
+    placeholder="Insira o endereço completo"
+    readonly
+    [ngClass]="{'is-invalid': formGroupPessoa.get('endereco')?.invalid && formGroupPessoa.get('endereco')?.touched}"
+  />
+  <div class="invalid-feedback" *ngIf="formGroupPessoa.get('endereco')?.invalid && formGroupPessoa.get('endereco')?.touched">
+    <small *ngIf="formGroupPessoa.get('endereco')?.errors?.['minlength']">Mínimo 5 caracteres.</small>
+    <small *ngIf="formGroupPessoa.get('endereco')?.errors?.['maxlength']">Máximo 50 caracteres.</small>
+    <small *ngIf="formGroupPessoa.get('endereco')?.errors?.['pattern']">Somente letras, números e espaços são permitidos.</small>
+  </div>
+</div>
 
     <!-- Número da Casa -->
     <div class="mb-3">
@@ -62,43 +76,90 @@
       </div>
     </div>
 
-    <!-- Cidade -->
-    <div class="mb-3">
-      <label for="cidade" class="form-label">Cidade</label>
-      <input formControlName="cidade" type="text" class="form-control" id="cidade" placeholder="Insira a cidade" readonly />
-    </div>
+  <!-- Cidade -->
+<div class="mb-3">
+  <label for="cidade" class="form-label">Cidade</label>
+  <input
+    formControlName="cidade"
+    type="text"
+    class="form-control"
+    id="cidade"
+    placeholder="Insira a cidade"
+    readonly
+    [ngClass]="{'is-invalid': formGroupPessoa.get('cidade')?.invalid && formGroupPessoa.get('cidade')?.touched}"
+  />
+  <div class="invalid-feedback" *ngIf="formGroupPessoa.get('cidade')?.invalid && formGroupPessoa.get('cidade')?.touched">
+    <small *ngIf="formGroupPessoa.get('cidade')?.errors?.['required']">Cidade é obrigatória.</small>
+    <small *ngIf="formGroupPessoa.get('cidade')?.errors?.['minlength']">Mínimo 3 caracteres.</small>
+    <small *ngIf="formGroupPessoa.get('cidade')?.errors?.['maxlength']">Máximo 50 caracteres.</small>
+    <small *ngIf="formGroupPessoa.get('cidade')?.errors?.['pattern']">Somente letras e espaços são permitidos.</small>
+  </div>
+</div>
 
-    <!-- UF -->
-    <div class="mb-3">
-      <label for="uf" class="form-label">UF</label>
-      <select formControlName="uf" class="form-control" id="uf">
-        <option value="" readonly >Selecione o estado</option>
-        <option *ngFor="let estado of estados" [value]="estado.value">{{ estado.label }}</option>
-      </select>
-    </div>
 
-    <!-- Contato -->
-    <div class="mb-3">
-      <label for="contatos" class="form-label">Contato</label>
-      <input
-        formControlName="contatos"
-        type="text"
-        class="form-control"
-        id="contatos"
-        placeholder="Insira o número de contato"
-        [ngClass]="{'is-invalid': formGroupPessoa.get('contatos')?.invalid && formGroupPessoa.get('contatos')?.touched}"
-      />
-      <div class="invalid-feedback" *ngIf="formGroupPessoa.get('contatos')?.invalid && formGroupPessoa.get('contatos')?.touched">
-        <small *ngIf="formGroupPessoa.get('contatos')?.errors?.['required']">Contato é obrigatório.</small>
-        <small *ngIf="formGroupPessoa.get('contatos')?.errors?.['pattern']">Formato inválido (somente números, 10 ou 11 dígitos).</small>
+<!-- UF -->
+<div class="mb-3">
+  <label for="uf" class="form-label">UF</label>
+  <select
+    formControlName="uf"
+    class="form-control"
+    id="uf"
+    [ngClass]="{'is-invalid': formGroupPessoa.get('uf')?.invalid && formGroupPessoa.get('uf')?.touched}"
+  >
+    <option value="" readonly >Selecione o estado</option>
+    <option *ngFor="let estado of estados" [value]="estado.value">{{ estado.label }}</option>
+  </select>
+  <div class="invalid-feedback" *ngIf="formGroupPessoa.get('uf')?.errors?.['required']">
+    UF é obrigatório.
+  </div>
+</div>
+
+
+
+    <!--Percorrendo o array de contatos-->
+    <div formArrayName="contatos">
+      <div *ngFor="let contato of contatos.controls; let i = index" [formGroupName]="i">
+        <!--Tipo de Contato-->
+        <div class="mb-3">
+          <label for="tipoContato" class="form-label">Tipo de Contato</label>
+          <select
+            formControlName="tipoContato"
+            class="form-control"
+            id="tipoContato"
+            [ngClass]="{'is-invalid': formGroupPessoa.get('contatos')?.get(i.toString())?.get('tipoContato')?.invalid && formGroupPessoa.get('contatos')?.get(i.toString())?.get('tipoContato')?.touched}"
+          >
+            <option value="">Selecione o tipo de contato</option>
+            <option *ngFor="let tipo of tiposContato" [value]="tipo.value">{{ tipo.label }}</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="formGroupPessoa.get('contatos')?.get(i.toString())?.get('tipoContato')?.invalid && formGroupPessoa.get('contatos')?.get(i.toString())?.get('tipoContato')?.touched">
+            <small *ngIf="formGroupPessoa.get('contatos')?.get(i.toString())?.get('tipoContato')?.errors?.['required']">Tipo de contato é obrigatório.</small>
+          </div>
+        </div>
+
+        <!-- Contato -->
+        <div class="mb-3">
+          <label for="contato" class="form-label">Contato</label>
+          <input
+            formControlName="contato"
+            type="text"
+            class="form-control"
+            id="contato"
+            placeholder="Insira o número de contato"
+            [ngClass]="{'is-invalid': formGroupPessoa.get('contatos')?.get(i.toString())?.get('contato')?.invalid && formGroupPessoa.get('contatos')?.get(i.toString())?.get('contato')?.touched}"
+          />
+          <div class="invalid-feedback" *ngIf="formGroupPessoa.get('contatos')?.get(i.toString())?.get('contato')?.invalid && formGroupPessoa.get('contatos')?.get(i.toString())?.get('contato')?.touched">
+            <small *ngIf="formGroupPessoa.get('contatos')?.get(i.toString())?.get('contato')?.errors?.['required']">Contato é obrigatório.</small>
+            <small *ngIf="formGroupPessoa.get('contatos')?.get(i.toString())?.get('contato')?.errors?.['pattern']">Formato inválido (somente números, 10 ou 11 dígitos).</small>
+          </div>
+        </div>
       </div>
     </div>
 
+    <!-- Botão de adicionar contato -->
+    <button type="button" class="btn btn-primary" (click)="addContato()">Adicionar Contato</button>
+
     <div class="d-flex justify-content-center gap-3 mb-5 p-3">
-      <button type="submit" class="btn btn-primary w-25" [disabled]="formGroupPessoa.invalid || isLoading">
-        <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span *ngIf="!isLoading">Salvar</span>
-      </button>
+      <button type="submit" class="btn btn-primary w-25" [disabled]="formGroupPessoa.invalid">Salvar</button>
       <button type="button" class="btn btn-secondary w-25" (click)="voltar()">Voltar</button>
     </div>
   </form>

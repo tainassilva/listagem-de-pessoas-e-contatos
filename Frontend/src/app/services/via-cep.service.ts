@@ -7,12 +7,12 @@ import { ViaCepResponse } from '../interfaces/viacepresponse';
   providedIn: 'root'
 })
 export class ViaCepService {
-  private baseUrl = 'https://viacep.com.br/ws/';
+  private baseUrl = 'https://viacep.com.br/ws';
 
   http= inject( HttpClient);
 
-  buscarEnderecoPorCep(cep: string): Observable<ViaCepResponse> { // Use a interface
-    const url = `${this.baseUrl}${cep}/json`;
+  buscarEnderecoPorCep(cep: string): Observable<ViaCepResponse> {
+    const url = `${this.baseUrl}/${cep}/json`;
     return this.http.get<ViaCepResponse>(url);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IPessoa } from '../interfaces/pessoa';
 import { environment } from 'src/environments/environment';
@@ -10,26 +10,26 @@ import { Observable } from 'rxjs';
 export class PessoasService {
   url = environment.url;
 
-  constructor(private http: HttpClient) {}
+  http = inject(HttpClient)
 
   buscarTodasAsPessoas() {
-    return this.http.get<IPessoa[]>(`${this.url}`);
+    return this.http.get<IPessoa[]>(`${this.url}/pessoas`);
   }
 
 
   buscarPessoaPorId(id: number): Observable<IPessoa> {
-    return this.http.get<IPessoa>(`${this.url}/${id}`);
+    return this.http.get<IPessoa>(`${this.url}/pessoas/${id}`);
   }
 
   cadastrarPessoa(pessoa: IPessoa){
-    return this.http.post<IPessoa>(`${this.url}`, pessoa);
+    return this.http.post<IPessoa>(`${this.url}/pessoas`, pessoa);
   }
 
   deletarPessoa(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.url}/${id}`);
+    return this.http.delete<void>(`${this.url}/pessoas/${id}`);
   }
 
   atualizarPessoa(id: number, pessoa: IPessoa): Observable<IPessoa> {
-    return this.http.put<IPessoa>(`${this.url}/${id}`, pessoa);
+    return this.http.put<IPessoa>(`${this.url}/pessoas/${id}`, pessoa);
   }
 }
