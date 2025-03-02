@@ -1,6 +1,7 @@
 import { IContato } from "./contato";
 import { Estados } from "./estados";
 export interface IPessoa {
+
   id?: number;
   nome: string;
   endereco: string;

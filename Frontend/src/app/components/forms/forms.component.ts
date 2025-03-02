@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { FormGroup, FormArray, FormControl, FormBuilder, Validators } from '@angular/forms'; // Importe FormBuilder e Validators
+import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms'; // Importe FormBuilder e Validators
 import { Router } from '@angular/router';
 import { ViaCepService } from 'src/app/services/via-cep.service';
 import Swal from 'sweetalert2';
@@ -55,6 +55,7 @@ export class FormsComponent {
   router = inject(Router);
   formBuilder = inject(FormBuilder);
 
+
   handleBuscarEnderecoPorCep() {
     const cepControl = this.formGroupPessoa.get('cep');
     if (cepControl?.value) {
@@ -72,7 +73,6 @@ export class FormsComponent {
           }
         },
         error: (error) => {
-          console.error('Erro ao buscar CEP:', error);
           Swal.fire('Erro', 'Não foi possível buscar o CEP.', 'error');
         }
       });
@@ -102,4 +102,9 @@ export class FormsComponent {
       contato: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]]
     }));
   }
+
+  deletarContato(index: number) {
+    this.contatos.removeAt(index);
+  }
+
 }

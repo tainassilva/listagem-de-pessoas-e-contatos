@@ -114,8 +114,6 @@
   </div>
 </div>
 
-
-
     <!--Percorrendo o array de contatos-->
     <div formArrayName="contatos">
       <div *ngFor="let contato of contatos.controls; let i = index" [formGroupName]="i">
@@ -155,8 +153,15 @@
       </div>
     </div>
 
-    <!-- Botão de adicionar contato -->
-    <button type="button" class="btn btn-primary" (click)="addContato()">Adicionar Contato</button>
+    <div class="d-flex gap-3 mb-5 p-3">
+      <div *ngFor="let contato of contatos.controls; let i = index" [formGroupName]="i">
+        <div *ngIf="contatos.length > 0">
+          <button type="button" class="btn btn-danger" (click)="deletarContato(i)">Deletar Contato</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="addContato()">Adicionar Contato</button>
+    </div>
+
 
     <div class="d-flex justify-content-center gap-3 mb-5 p-3">
       <button type="submit" class="btn btn-primary w-25" [disabled]="formGroupPessoa.invalid">Salvar</button>

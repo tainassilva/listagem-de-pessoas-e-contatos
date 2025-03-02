@@ -12,11 +12,11 @@ import Swal from 'sweetalert2';
   styleUrls: ['./add-pessoa.component.scss'],
 })
 export class AddPessoaComponent {
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private pessoasService = inject(PessoasService);
   private router = inject(Router);
 
-  formGroupPessoa: FormGroup = this.fb.group({
+  formGroupPessoa: FormGroup = this.formBuilder.group({
     nome: ['', [
       Validators.required,
       Validators.minLength(3),
@@ -45,24 +45,19 @@ export class AddPessoaComponent {
 
     uf: ['', [Validators.required]],
 
-    contatos: this.fb.array([])
+    contatos: this.formBuilder.array([])
   });
 
   get contatos(): FormArray {
     return this.formGroupPessoa.get('contatos') as FormArray;
   }
 
-  // o Optional pode ser usado para tornar um parâmetro de uma função opcional
   createContatoFormGroup(contato: Partial<IContato> = {}): FormGroup {
-    return this.fb.group({
+    return this.formBuilder.group({
       id: [contato.id ],
       tipoContato: [contato.tipoContato || '', Validators.required],
       contato: [contato.contato || '', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]]
     });
-  }
-
-  addContato(): void {
-    this.contatos.push(this.createContatoFormGroup());
   }
 
   salvarPessoa(): void {

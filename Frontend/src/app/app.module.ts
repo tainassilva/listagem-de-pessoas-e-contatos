@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { PessoasService } from './services/pessoas.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './components/footer/footer.component';
+import { TableListPessoasComponent } from './components/table-list-pessoas/table-list-pessoas.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { FooterComponent } from './components/footer/footer.component';
     FormsComponent,
     AddPessoaComponent,
     EditPessoaComponent,
-    FooterComponent
+    FooterComponent,
+    TableListPessoasComponent
   ],
   imports: [
     BrowserModule,
