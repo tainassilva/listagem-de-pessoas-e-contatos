@@ -63,7 +63,7 @@ Antes de rodar o projeto, certifique-se de ter os seguintes itens instalados:
 1. Clone o repositório:
 ```bash
 git clone https://github.com/tainassilva/listagem-de-pessoas-e-contatos.git
-
+```
 
 ```bash
 cd listagem-de-pessoas-e-contatos/backend/Controle-de-contatos
