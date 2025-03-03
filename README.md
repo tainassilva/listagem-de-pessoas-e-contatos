@@ -14,6 +14,10 @@
 
 Este projeto é um **Gerenciador de Pessoas e Contatos**, composto por um backend em **Spring Boot** e um frontend em **Angular 16**. O sistema permite cadastrar, editar, listar e excluir pessoas e seus respectivos contatos.
 
+
+📽️ [Assista ao vídeo de demonstração](https://youtu.be/LFtJSVKJoHo?si=uWobIwhWJCY3rU9d)
+
+
 ## 🚀 Tecnologias utilizadas
 
 ### **Frontend:**
@@ -58,8 +62,8 @@ Antes de rodar o projeto, certifique-se de ter os seguintes itens instalados:
 
 1. Clone o repositório:
 ```bash
-   git clone https://github.com/tainassilva/listagem- de-pessoas-e-contatos.git
-```
+git clone https://github.com/tainassilva/listagem-de-pessoas-e-contatos.git
+
 
 ```bash
 cd listagem-de-pessoas-e-contatos/backend/Controle-de-contatos
